@@ -50,7 +50,7 @@ namespace Swasey.Commands
             return Task.FromResult<ILifecycleContext>(ctx);
         }
 
-        private IEnumerable<dynamic> ExtractApiOperations(ILifecycleContext context)
+        protected IEnumerable<dynamic> ExtractApiOperations(ILifecycleContext context)
         {
             foreach (var apiKv in context.ApiPathJsonMapping)
             {
@@ -73,7 +73,7 @@ namespace Swasey.Commands
             }
         }
 
-        private NormalizationApiOperation ParseOperationData(object obj)
+        protected NormalizationApiOperation ParseOperationData(object obj)
         {
             dynamic extractedOp = obj;
             var opObj = extractedOp.JObject;
@@ -98,7 +98,7 @@ namespace Swasey.Commands
             return op;
         }
 
-        private bool ParseSupportsStreamingUpload(dynamic op)
+        protected bool ParseSupportsStreamingUpload(dynamic op)
         {
             if (!op.ContainsKey("consumes")) { goto ReturnFalse; }
 
@@ -122,7 +122,7 @@ namespace Swasey.Commands
             return false;
         }
 
-        private bool ParseSupportsStreamingDownload(dynamic op)
+        protected bool ParseSupportsStreamingDownload(dynamic op)
         {
             if (!op.ContainsKey("produces")) { goto ReturnFalse; }
 
@@ -146,7 +146,7 @@ namespace Swasey.Commands
             return false;
         }
 
-        private IEnumerable<NormalizationApiOperationParameter> ParseParameters(dynamic opKvp)
+        protected IEnumerable<NormalizationApiOperationParameter> ParseParameters(dynamic opKvp)
         {
             var op = opKvp.Value;
 
@@ -173,7 +173,7 @@ namespace Swasey.Commands
             ;
         }
 
-        private NormalizationApiOperationResponse ParseResponse(dynamic op)
+        protected NormalizationApiOperationResponse ParseResponse(dynamic op)
         {
             //Not sure if this is the best way to go about handling response. 
             //In Swagger 2.0 Response type seems to be tied to the
@@ -202,7 +202,7 @@ namespace Swasey.Commands
             return resp;
         }
 
-        private ParameterType GetParamType(dynamic op)
+        protected ParameterType GetParamType(dynamic op)
         {
             var p = ((string) op["in"]).Trim().ToLowerInvariant();
             return p.ParseParameterType();

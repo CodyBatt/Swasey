@@ -12,7 +12,7 @@ namespace Swasey.Commands
     {
         private ILifecycleContext ctx;
 
-        public Task<ILifecycleContext> Execute(ILifecycleContext context)
+        public virtual Task<ILifecycleContext> Execute(ILifecycleContext context)
         {
             ctx = new LifecycleContext(context)
             {
@@ -66,7 +66,7 @@ namespace Swasey.Commands
             return Task.FromResult<ILifecycleContext>(ctx);
         }
 
-        private NormalizationApiModelEnum ParseEnumData(dynamic item)
+        protected NormalizationApiModelEnum ParseEnumData(dynamic item)
         {
             dynamic model = item.Value;
 
@@ -89,13 +89,15 @@ namespace Swasey.Commands
             return normEnum;
         }
 
-        private NormalizationApiModel ParseModelData(dynamic item)
+        protected virtual string GetModelName(dynamic model) => model.Value.title;
+
+        protected NormalizationApiModel ParseModelData(dynamic item)
         {
            dynamic model = item.Value;
 
             var normModel = new NormalizationApiModel
             {
-                Name = (string) model.title,
+                Name = GetModelName(item),
             };
 
             if (model.ContainsKey("subTypes"))
@@ -129,7 +131,7 @@ namespace Swasey.Commands
             return normModel;
         }
 
-        private IEnumerable<NormalizationApiModelProperty> ParseProperties(dynamic model)
+        protected IEnumerable<NormalizationApiModelProperty> ParseProperties(dynamic model)
         {
             if (!model.ContainsKey("properties")) goto NoMoreProperties;
 
@@ -161,7 +163,7 @@ namespace Swasey.Commands
             yield break;
         }
 
-        private HashSet<string> ParseRequiredProperties(dynamic model)
+        protected HashSet<string> ParseRequiredProperties(dynamic model)
         {
             var requiredProperties = new HashSet<string>();
 

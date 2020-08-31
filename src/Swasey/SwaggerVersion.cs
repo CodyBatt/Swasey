@@ -16,7 +16,10 @@ namespace Swasey
         Version12,
 
         [EnumMember(Value = "2.0")]
-        Version20
+        Version20,
+
+        [EnumMember(Value = "3.0")]
+        Version30
 
     }
 }

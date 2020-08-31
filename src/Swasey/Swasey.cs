@@ -44,6 +44,10 @@ namespace Swasey
                     SwaggerVersion = SwaggerVersion.Version20;
                     break;
 
+                case "3.0":
+                    SwaggerVersion = SwaggerVersion.Version30;
+                    break;
+
                 default:
                     throw new Exception("I don't recognize that version. Sure you got it right?");
             }
@@ -75,8 +79,23 @@ namespace Swasey
                 lifecycle = new GenerationLifecycle()
                     .Enqueue(new LoadResourceListingJsonCommand20())
                     .Enqueue(new ValidateSwaggerResourceListingCommand20())
-                    .Enqueue(new ValidateSwaggerApiDefinitionCommand20())
+                    .Enqueue(new ValidateSwaggerApiComponentsCommand30())
                     .Enqueue(new ExtractApiModelsCommand20())
+                    .Enqueue(new ExtractApiOperationsCommand20())
+                    .Enqueue(new NormalizeEnumsCommand())
+                    .Enqueue(new NormalizeModelsCommand20())
+                    .Enqueue(new NormalizeOperationsCommand20())
+                    .Enqueue(new GenerateApiSourcesCommand20())
+                    .Enqueue(new GenerateModelSourcesCommand())
+                    ;
+            }
+            else if(SwaggerVersion == SwaggerVersion.Version30)
+            {
+                lifecycle = new GenerationLifecycle()
+                    .Enqueue(new LoadResourceListingJsonCommand20())
+                    .Enqueue(new ValidateSwaggerResourceListingCommand30())
+                    .Enqueue(new ValidateSwaggerApiComponentsCommand30())
+                    .Enqueue(new ExtractApiModelsCommand30())
                     .Enqueue(new ExtractApiOperationsCommand20())
                     .Enqueue(new NormalizeEnumsCommand())
                     .Enqueue(new NormalizeModelsCommand20())

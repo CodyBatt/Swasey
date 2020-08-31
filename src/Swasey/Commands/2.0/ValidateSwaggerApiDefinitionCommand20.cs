@@ -6,7 +6,7 @@ using Swasey.Lifecycle;
 
 namespace Swasey.Commands
 {
-    internal class ValidateSwaggerApiDefinitionCommand20 : ILifecycleCommand
+    internal class ValidateSwaggerApiDefinitionsCommand20 : ILifecycleCommand
     {
 
         public Task<ILifecycleContext> Execute(ILifecycleContext context)
