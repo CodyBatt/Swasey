@@ -50,7 +50,10 @@ namespace Swasey.Model
             get { return _response; }
             set
             {
-                value.Context = this;
+                if (value != null)
+                {
+                    value.Context = this;
+                }
                 _response = value;
             }
         }

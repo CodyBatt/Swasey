@@ -12,10 +12,9 @@ namespace Swasey.Commands
 {
     internal class ExtractApiOperationsCommand20 : ILifecycleCommand
     {
+        public Func<dynamic, bool> OperationFilter { get; protected set; }
 
-        public Func<dynamic, bool> OperationFilter { get; private set; }
-
-        public Func<dynamic, bool> OperationParameterFilter { get; private set; }
+        public Func<dynamic, bool> OperationParameterFilter { get; protected set; }
 
         public Task<ILifecycleContext> Execute(ILifecycleContext context)
         {
@@ -50,7 +49,7 @@ namespace Swasey.Commands
             return Task.FromResult<ILifecycleContext>(ctx);
         }
 
-        protected IEnumerable<dynamic> ExtractApiOperations(ILifecycleContext context)
+        protected virtual IEnumerable<dynamic> ExtractApiOperations(ILifecycleContext context)
         {
             foreach (var apiKv in context.ApiPathJsonMapping)
             {
@@ -73,7 +72,7 @@ namespace Swasey.Commands
             }
         }
 
-        protected NormalizationApiOperation ParseOperationData(object obj)
+        protected virtual NormalizationApiOperation ParseOperationData(object obj)
         {
             dynamic extractedOp = obj;
             var opObj = extractedOp.JObject;
@@ -98,7 +97,7 @@ namespace Swasey.Commands
             return op;
         }
 
-        protected bool ParseSupportsStreamingUpload(dynamic op)
+        private bool ParseSupportsStreamingUpload(dynamic op)
         {
             if (!op.ContainsKey("consumes")) { goto ReturnFalse; }
 
@@ -122,7 +121,7 @@ namespace Swasey.Commands
             return false;
         }
 
-        protected bool ParseSupportsStreamingDownload(dynamic op)
+        private bool ParseSupportsStreamingDownload(dynamic op)
         {
             if (!op.ContainsKey("produces")) { goto ReturnFalse; }
 
@@ -146,7 +145,7 @@ namespace Swasey.Commands
             return false;
         }
 
-        protected IEnumerable<NormalizationApiOperationParameter> ParseParameters(dynamic opKvp)
+        private IEnumerable<NormalizationApiOperationParameter> ParseParameters(dynamic opKvp)
         {
             var op = opKvp.Value;
 
@@ -173,7 +172,7 @@ namespace Swasey.Commands
             ;
         }
 
-        protected NormalizationApiOperationResponse ParseResponse(dynamic op)
+        private NormalizationApiOperationResponse ParseResponse(dynamic op)
         {
             //Not sure if this is the best way to go about handling response. 
             //In Swagger 2.0 Response type seems to be tied to the

@@ -22,9 +22,29 @@ namespace Swasey.Normalization
             type.TryParseTypeFromJObject(obj);
             type.TryParseEnumFromJObject(obj);
 
+            if(prop.ContainsKey("schema"))
+            {
+                prop = prop.schema;
+                ApplyPropertyAttributes(prop, type);
+            }
+            else
+            {
+                ApplyPropertyAttributes(prop, type);
+            }
+
+            if (string.IsNullOrWhiteSpace(type.TypeName))
+            {
+                type.TypeName = "object";
+            }
+
+            return type;
+        }
+
+        private static void ApplyPropertyAttributes(dynamic prop, SimpleNormalizationApiDataType type)
+        {
             if (prop.ContainsKey("defaultValue"))
             {
-                type.DefaultValue = (string) prop.defaultValue;
+                type.DefaultValue = (string)prop.defaultValue;
             }
             if (prop.ContainsKey("minimum"))
             {
@@ -36,15 +56,8 @@ namespace Swasey.Normalization
             }
             if (prop.ContainsKey("nullable"))
             {
-                type.IsNullable = (bool) prop.nullable;
+                type.IsNullable = (bool)prop.nullable;
             }
-
-            if (string.IsNullOrWhiteSpace(type.TypeName))
-            {
-                type.TypeName = "object";
-            }
-
-            return type;
         }
 
         public void TryParseTypeFromJObject(object obj)
@@ -89,7 +102,7 @@ namespace Swasey.Normalization
                 // Assume that the property is a model type
                 TypeName = SplitType((string) prop.type);
                 IsModelType = true;
-            }
+            }           
         }
 
         //for Swagger 2.0 we need to split the $ref
@@ -175,6 +188,10 @@ namespace Swasey.Normalization
                     case "date":
                     case "date-time":
                         format = Constants.DataType_DateTime;
+                        isPrimitive = true;
+                        break;
+                    case "date-span":
+                        format = Constants.DataType_TimeSpan;
                         isPrimitive = true;
                         break;
                     case "byte":

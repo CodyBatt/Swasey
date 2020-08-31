@@ -96,7 +96,7 @@ namespace Swasey
                     .Enqueue(new ValidateSwaggerResourceListingCommand30())
                     .Enqueue(new ValidateSwaggerApiComponentsCommand30())
                     .Enqueue(new ExtractApiModelsCommand30())
-                    .Enqueue(new ExtractApiOperationsCommand20())
+                    .Enqueue(new ExtractApiOperationsCommand30())
                     .Enqueue(new NormalizeEnumsCommand())
                     .Enqueue(new NormalizeModelsCommand20())
                     .Enqueue(new NormalizeOperationsCommand20())

@@ -20,5 +20,6 @@ namespace Swasey
 
         public const string DataType_DateTime = "System.DateTime";
 
+        public const string DataType_TimeSpan = "System.TimeSpan";
     }
 }

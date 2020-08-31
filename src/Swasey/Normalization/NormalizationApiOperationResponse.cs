@@ -16,4 +16,15 @@ namespace Swasey.Normalization
 
         public new string Title20 { get; set; }
     }
+
+    internal class VoidApiOperationResponse : NormalizationApiOperationResponse
+    {
+
+        public VoidApiOperationResponse() { IsVoidType = true; }
+
+        public VoidApiOperationResponse(NormalizationApiOperationResponse copyFrom) : base(copyFrom)
+        {
+            IsVoidType = true;
+        }
+    }
 }

@@ -143,6 +143,7 @@ namespace Swasey.Commands
         private ResponseDefinition NormalizeResponseDefinition(NormalizationApiOperation op)
         {
             var dt = op.Response.AsDataType();
+            if (dt == null) return null;
 
             //this is a weird way of going about this.
             dt.Title20 = op.Response.Title20;

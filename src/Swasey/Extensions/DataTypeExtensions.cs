@@ -11,6 +11,8 @@ namespace Swasey
 
         public static DataType AsDataType(this NormalizationApiDataType This)
         {
+            if (This.IsVoidType) return null;
+
             return new DataType(This.TypeName.MapDataTypeName())
             {
                 DefaultValue = This.DefaultValue,
