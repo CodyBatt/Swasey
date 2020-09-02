@@ -42,9 +42,19 @@ namespace Swasey.Normalization
 
         private static void ApplyPropertyAttributes(dynamic prop, SimpleNormalizationApiDataType type)
         {
+
             if (prop.ContainsKey("defaultValue"))
             {
                 type.DefaultValue = (string)prop.defaultValue;
+            }
+            if (prop.ContainsKey("default"))
+            {
+                var defaultValue = prop.@default.ToString();
+                if ((string)prop.type == "string")
+                {
+                    defaultValue = (string)prop.@default;
+                }
+                type.DefaultValue = defaultValue;
             }
             if (prop.ContainsKey("minimum"))
             {
@@ -63,7 +73,6 @@ namespace Swasey.Normalization
         public void TryParseTypeFromJObject(object obj)
         {
             dynamic prop = obj;
-
             prop = prop.ContainsKey("schema") ? prop.schema : prop;
 
             var propType = (string) prop.type;
@@ -72,20 +81,20 @@ namespace Swasey.Normalization
             switch (propType)
             {
                 case "array":
-                    ParseArrayFromJObject(obj);
+                    ParseArrayFromJObject(prop);
                     break;
                 case "boolean":
                     IsPrimitive = true;
                     TypeName = propType;
                     break;
                 case "integer":
-                    ParseIntegerFromJObject(obj);
+                    ParseIntegerFromJObject(prop);
                     break;
                 case "number":
-                    ParseNumberFromJObject(obj);
+                    ParseNumberFromJObject(prop);
                     break;
                 case "string":
-                    ParseStringFromJObject(obj);
+                    ParseStringFromJObject(prop);
                     break;
                 case "void":
                     TypeName = propType;

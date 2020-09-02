@@ -110,7 +110,7 @@ namespace Swasey.Commands
             foreach(var kvp in bodyObj.content)
             {
                 var ct = kvp.Key;
-                if (ct != "application/json") return null;
+                if (ct != "application/json") continue;
 
                 var pinfo = kvp.Value;
                 param.CopyFrom(SimpleNormalizationApiDataType.ParseFromJObject(pinfo));
@@ -139,16 +139,21 @@ namespace Swasey.Commands
             foreach (var paramObj in op.parameters)
             {
                 if (!OperationParameterFilter(paramObj)) continue;
-                if (!paramObj.ContainsKey("type") && !paramObj.ContainsKey("schema")) continue;
+                if (paramObj.ContainsKey("type"))
+                {
+                    throw new InvalidOperationException($"Unexpected type property in {paramObj.ToString()}");
+                }
+
+                if(!paramObj.ContainsKey("schema")) continue;
 
                 var param = new NormalizationApiOperationParameter();
                 param.CopyFrom(SimpleNormalizationApiDataType.ParseFromJObject(paramObj));
 
-                param.AllowsMultiple = paramObj.ContainsKey("allowMultiple") && (bool) paramObj.allowMultiple;
-                param.Description = paramObj.ContainsKey("description") ? (string) paramObj.description : string.Empty;
-                param.Name = paramObj.ContainsKey("name") ? (string) paramObj.name : string.Empty;
+                // in: path, body, query etc..
                 param.ParameterType = GetParamType(paramObj);
-                param.IsRequired = paramObj.ContainsKey("required") && (bool) paramObj.required;
+                param.AllowsMultiple = paramObj.ContainsKey("allowMultiple") && (bool) paramObj.allowMultiple;
+                param.Name = paramObj.ContainsKey("name") ? (string) paramObj.name : string.Empty;
+                param.IsRequired = paramObj.ContainsKey("required") && (bool)paramObj.required;
 
                 yield return param;
             }
@@ -164,10 +169,7 @@ namespace Swasey.Commands
             //response element whereas it was not in Swagger 1.2.
             dynamic dataType = op.Value;
             if (dataType.responses.ContainsKey("200"))
-            {
                 dataType = dataType.responses["200"];
-                
-            }
             else if (dataType.responses.ContainsKey("201"))
                 dataType = op.Value.responses["201"];
             else if (dataType.responses.ContainsKey("204"))
